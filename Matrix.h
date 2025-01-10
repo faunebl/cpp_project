@@ -25,6 +25,7 @@ public:
 
     Matrix inverse() const;
     bool is_invertible() const;
+    double determinant() const;
 
     void print() const;
 };

@@ -1,4 +1,3 @@
-
 // Matrix.cpp
 #include "Matrix.h"
 
@@ -61,19 +60,47 @@ Matrix Matrix::inverse() const {
     return inverse;
 }
 
+double Matrix::determinant() const {
+    if (rows != cols) {
+        throw std::runtime_error("Determinant is defined only for square matrices.");
+    }
+
+    int n = rows;
+    if (n == 1) {
+        return data[0][0];
+    }
+    if (n == 2) {
+        return data[0][0] * data[1][1] - data[0][1] * data[1][0];
+    }
+
+    double det = 0.0;
+    for (int col = 0; col < n; ++col) {
+        // create submatrix
+        std::vector<std::vector<double>> submatrix;
+        for (int i = 1; i < n; ++i) {
+            std::vector<double> row;
+            for (int j = 0; j < n; ++j) {
+                if (j != col) {
+                    row.push_back(data[i][j]);
+                }
+            }
+            submatrix.push_back(row);
+        }
+
+        Matrix sub(submatrix);
+        det += ((col % 2 == 0 ? 1 : -1) * data[0][col] * sub.determinant());
+    }
+
+    return det;
+}
+
 bool Matrix::is_invertible() const {
     if (rows != cols) {
         return false;
     }
 
-    // compute determinant using Laplace expansion for simplicity
-    if (rows == 2) {
-        double determinant = data[0][0] * data[1][1] - data[0][1] * data[1][0];
-        return std::abs(determinant) > 1e-9;
-    }
-
-    // for larger matrices, determinant calculation can be added
-    throw std::runtime_error("Determinant calculation for size > 2 not implemented.");
+    double det = determinant();
+    return std::abs(det) > 1e-9;
 }
 
 void Matrix::print() const {
