@@ -6,5 +6,6 @@
 #include <stdexcept>
 
 std::vector<double> create_time_grid(double maturity, int time_steps);
+std::vector<double> create_space_grid(double multiplier, double volatility, int space_steps);
 
-#endif
+#endif // TIMEGRID_H
