@@ -17,6 +17,15 @@ PDEPricer::PDEPricer(double maturity, int time_steps, double multiplier, double 
     double dt = maturity / time_steps;
     double dx = (2 * multiplier * volatility) / (space_steps - 1);
 
+    // Log initialization
+    std::cout << "Initializing PDEPricer with parameters:\n";
+    std::cout << "  Maturity: " << maturity << "\n";
+    std::cout << "  Time steps: " << time_steps << "\n";
+    std::cout << "  Multiplier: " << multiplier << "\n";
+    std::cout << "  Volatility: " << volatility << "\n";
+    std::cout << "  Space steps: " << space_steps << "\n";
+    std::cout << "  Risk-free rate: " << risk_free_rate << "\n";
+
     // Initialize boundary and terminal conditions for a European call option
     for (size_t i = 0; i < space_grid.size(); ++i) {
         terminal_condition[i] = std::max(space_grid[i] - 1.0, 0.0); // payoff: max(S - K, 0), assume K = 1
@@ -33,11 +42,19 @@ void PDEPricer::initialize_matrices(double dt, double dx, double volatility, dou
         double sigma2 = volatility * volatility;
         double x = space_grid[i];
 
-        a_matrix[i][i] = 1.0 / dt;
-        b_matrix[i][i - 1] = -0.5 * (sigma2 * x * x / (dx * dx));
-        b_matrix[i][i + 1] = -0.5 * (sigma2 * x * x / (dx * dx));
-        c_matrix[i][i] = risk_free_rate * x / (2 * dx);
-        d_matrix[i][i] = -risk_free_rate;
+        a_matrix[i][i] = 1.0 / dt + sigma2 * x * x / (dx * dx) + risk_free_rate;
+        b_matrix[i][i - 1] = -0.5 * sigma2 * x * x / (dx * dx) - risk_free_rate * x / (2 * dx);
+        b_matrix[i][i + 1] = -0.5 * sigma2 * x * x / (dx * dx) + risk_free_rate * x / (2 * dx);
+        c_matrix[i][i] = 0.0; // No off-diagonal time terms in this simple scheme
+        d_matrix[i][i] = -risk_free_rate; // Discounting
+
+        // Log matrix coefficients
+        std::cout << "Matrix coefficients at i = " << i << ":\n";
+        std::cout << "  a_matrix[i][i]: " << a_matrix[i][i] << "\n";
+        std::cout << "  b_matrix[i][i-1]: " << b_matrix[i][i - 1] << "\n";
+        std::cout << "  b_matrix[i][i+1]: " << b_matrix[i][i + 1] << "\n";
+        std::cout << "  c_matrix[i][i]: " << c_matrix[i][i] << "\n";
+        std::cout << "  d_matrix[i][i]: " << d_matrix[i][i] << "\n";
     }
 }
 
@@ -60,6 +77,13 @@ std::vector<double> PDEPricer::solve() const {
 
         next_solution[0] = boundary_conditions_lower[t];
         next_solution[space_steps - 1] = boundary_conditions_upper[t];
+
+        // Log intermediate solution
+        std::cout << "Time step t = " << t << ", intermediate solution:\n";
+        for (double value : next_solution) {
+            std::cout << value << " ";
+        }
+        std::cout << "\n";
 
         current_solution = next_solution;
     }

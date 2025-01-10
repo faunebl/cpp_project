@@ -10,11 +10,13 @@ int main() {
     int space_steps = 11;
     double risk_free_rate = 0.05;
 
+    std::cout << "Starting PDE pricing...\n";
+
     PDEPricer pricer(maturity, time_steps, multiplier, volatility, space_steps, risk_free_rate);
 
     std::vector<double> prices = pricer.solve();
 
-    std::cout << "Prices: ";
+    std::cout << "Final Prices: ";
     for (double price : prices) {
         std::cout << price << " ";
     }
