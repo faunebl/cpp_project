@@ -111,3 +111,59 @@ void Matrix::print() const {
         std::cout << std::endl;
     }
 }
+
+std::vector<double> Matrix::operator*(const std::vector<double>& vec) const {
+    if (vec.size() != cols) {
+        throw std::invalid_argument("Matrix and vector dimensions do not match for multiplication.");
+    }
+    std::vector<double> result(rows, 0.0);
+    for (size_t i = 0; i < rows; ++i) {
+        for (size_t j = 0; j < cols; ++j) {
+            result[i] += data[i][j] * vec[j];
+        }
+    }
+    return result;
+}
+
+std::vector<double> Matrix::solve(const std::vector<double>& b) const {
+    if (rows != cols || b.size() != rows) {
+        throw std::invalid_argument("Matrix must be square, and vector dimensions must match.");
+    }
+    // Make a copy of the matrix and vector for modifications
+    Matrix A = *this;
+    std::vector<double> x = b;
+
+    // Forward elimination
+    for (size_t i = 0; i < rows; ++i) {
+        for (size_t k = i + 1; k < rows; ++k) {
+            double factor = A.data[k][i] / A.data[i][i];
+            for (size_t j = i; j < cols; ++j) {
+                A.data[k][j] -= factor * A.data[i][j];
+            }
+            x[k] -= factor * x[i];
+        }
+    }
+
+    // Back substitution
+    for (int i = rows - 1; i >= 0; --i) {
+        for (int j = i + 1; j < cols; ++j) {
+            x[i] -= A.data[i][j] * x[j];
+        }
+        x[i] /= A.data[i][i];
+    }
+
+    return x;
+}
+
+Matrix Matrix::operator+(const Matrix& other) const {
+    if (rows != other.rows || cols != other.cols) {
+        throw std::invalid_argument("Matrix dimensions must match for addition.");
+    }
+    Matrix result(rows, cols);
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            result[i][j] = data[i][j] + other.data[i][j];
+        }
+    }
+    return result;
+}
