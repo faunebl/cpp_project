@@ -18,15 +18,11 @@ private:
     Matrix c_matrix;
     Matrix d_matrix;
 
+    void initialize_matrices(double dt, double dx, double volatility, double risk_free_rate);
+
 public:
     PDEPricer(double maturity, int time_steps, double multiplier, double volatility, int space_steps,
-              const std::vector<double>& boundary_conditions_lower,
-              const std::vector<double>& boundary_conditions_upper,
-              const std::vector<double>& terminal_condition,
-              const Matrix& a_matrix,
-              const Matrix& b_matrix,
-              const Matrix& c_matrix,
-              const Matrix& d_matrix);
+              double risk_free_rate);
 
     std::vector<double> solve() const;
 };
