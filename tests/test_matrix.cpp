@@ -6,7 +6,7 @@
 int main() {
     std::cout << "Testing Matrix class:\n";
 
-    Matrix matrix({{4, 7}, {2, 6}});
+    Matrix matrix({{5, 7}, {2, 8}});
     std::cout << "Original matrix:\n";
     matrix.print();
 
@@ -21,7 +21,7 @@ int main() {
         std::cout << "Matrix is not invertible.\n";
     }
 
-    Matrix large_matrix({{6, 1, 1}, {4, -2, 5}, {2, 8, 7}});
+    Matrix large_matrix({{1, 7, 3}, {4, -9, 2}, {-2, 10, 7}});
     std::cout << "\nTesting larger matrix:\n";
     large_matrix.print();
 

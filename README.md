@@ -11,3 +11,5 @@ Results are already visible in the results folder, where you can see the converg
 Important : if you want to replicate the results, you need gnuplot installed in order to see the graph.
 
 If you want further debugging or checking of the intermediate values, uncomment the lines of code in pde.cpp
+
+There are also several test files and executables in the tests folder (useful especially for the 1st question of the project)
