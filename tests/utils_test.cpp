@@ -1,5 +1,5 @@
 // utils_test.cpp
-// tests for the utility functions 
+// tests for the utility functions (only first two, the last two need the rest of the code to run)
 #include "utils.h"
 #include <iostream>
 

@@ -3,4 +3,4 @@
 
 double black_scholes_price(double S, double K, double T, double r, double sigma, bool is_call);
 
-#endif // BLACK_SCHOLES_H
+#endif

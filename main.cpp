@@ -5,7 +5,7 @@
 #include "black_scholes.h"
 
 int main() {
-    // Parameters
+    // params
     double maturity = 1.0;
     double volatility = 0.2;
     double risk_free_rate = 0.05;
@@ -18,17 +18,17 @@ int main() {
     // Black-Scholes reference price
     double bs_price = black_scholes_price(S0, K, maturity, risk_free_rate, volatility, is_call);
 
-    // Convergence study
+    // we can now study the convergence
     std::vector<int> steps = {10, 50, 100, 200, 400}; // Time and space steps
     std::vector<double> errors;
 
     std::cout << "Black-Scholes Price: " << bs_price << "\n";
 
     for (int n : steps) {
-        int m = n; // Using the same value for space steps for simplicity
+        int m = n; // to simplify we use the same values for n and m 
         PDEPricer pde_pricer(maturity, n, multiplier, volatility, m, risk_free_rate, theta);
 
-        // Solve PDE
+        // we solfe the PDE
         std::vector<double> pde_solution = pde_pricer.solve();
 
         // Approximate price at S0 (middle of the space grid)
@@ -40,11 +40,11 @@ int main() {
                   << ", PDE Price: " << pde_price << ", Error: " << error << "\n";
     }
 
-    // Save data to file
+    // save data
     std::string datafile = "convergence_data.csv";
     save_data_to_file(datafile, steps, errors);
 
-    // Plot using gnuplot
+    // plot with gnuplot
     std::string output_image = "convergence_graph.png";
     plot_with_gnuplot(datafile, output_image);
 

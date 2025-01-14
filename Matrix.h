@@ -29,12 +29,10 @@ public:
 
     void print() const;
 
-    // New methods for matrix-vector multiplication and solving linear systems
+    // adding useful operators and methods
     std::vector<double> operator*(const std::vector<double>& vec) const;
     std::vector<double> solve(const std::vector<double>& b) const;
-
-    // Addition operator for matrix addition
     Matrix operator+(const Matrix& other) const;
 };
 
-#endif // MATRIX_H
+#endif

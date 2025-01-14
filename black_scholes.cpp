@@ -1,7 +1,7 @@
 #include <cmath>
 #include <iostream>
 
-// Black-Scholes function
+// black-scholes function
 double black_scholes_price(double S, double K, double T, double r, double sigma, bool is_call) {
     double d1 = (std::log(S / K) + (r + 0.5 * sigma * sigma) * T) / (sigma * std::sqrt(T));
     double d2 = d1 - sigma * std::sqrt(T);
