@@ -82,7 +82,7 @@ std::vector<double> PDEPricer::solve() {
     int time_steps = time_grid.size() - 1;
     int space_steps = space_grid.size();
 
-    std::vector<double> current_solution = terminal_condition;
+    std::vector<double> current_solution(space_steps - 2, 0.0);
     std::vector<double> next_solution(space_steps, 0.0);
 
     for (int t = time_steps - 1; t >= 0; --t) {
