@@ -13,7 +13,7 @@ PDEPricer::PDEPricer(double maturity, int time_steps, double multiplier, double 
       terminal_condition(space_steps, 0.0),
       P_matrix(space_steps - 2, space_steps - 2),
       Q_matrix(space_steps - 2, space_steps - 2),
-      V_vector(space_steps - 2, 1) {
+      V_vector(space_steps - 2, 0.0) {
     double dt = maturity / time_steps;
     double dx = (2 * multiplier * volatility) / (space_steps - 1);
 
@@ -78,7 +78,7 @@ void PDEPricer::initialize_matrices(double dt, double dx, double volatility, dou
     Q_matrix.print();
 }
 
-std::vector<double> PDEPricer::solve() const {
+std::vector<double> PDEPricer::solve() {
     int time_steps = time_grid.size() - 1;
     int space_steps = space_grid.size();
 
