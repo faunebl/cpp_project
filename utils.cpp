@@ -24,7 +24,7 @@ std::vector<double> create_space_grid(double multiplier, double volatility, int 
     }
 
     std::vector<double> space_grid(space_steps);
-    double boundary = multiplier * volatility;
+    double boundary = multiplier * volatility + 1.0; // Ensures it's larger than K
     double delta_x = 2 * boundary / (space_steps - 1);
 
     for (int i = 0; i < space_steps; ++i) {
