@@ -73,10 +73,10 @@ void PDEPricer::initialize_matrices(double dt, double dx, double volatility, dou
     }
 
     // Log matrices
-    std::cout << "P Matrix:\n";
-    P_matrix.print();
-    std::cout << "Q Matrix:\n";
-    Q_matrix.print();
+    // std::cout << "P Matrix:\n";
+    // P_matrix.print();
+    // std::cout << "Q Matrix:\n";
+    // Q_matrix.print();
 }
 
 std::vector<double> PDEPricer::solve() {
@@ -87,52 +87,36 @@ std::vector<double> PDEPricer::solve() {
     std::vector<double> next_solution(space_steps, 0.0);
 
     for (int t = time_steps - 1; t >= 0; --t) {
-        std::cout << "Time step " << t << ":\n";
-
         // Compute V vector
         for (size_t i = 1; i < space_steps - 1; ++i) {
-            V_vector[i - 1] = theta * terminal_condition[i] + (1 - theta) * (boundary_conditions_upper[t] + boundary_conditions_lower[t]);
+            V_vector[i - 1] = boundary_conditions_lower[t] + boundary_conditions_upper[t];
         }
-        std::cout << "V_vector: ";
-        for (double v : V_vector) {
-            std::cout << v << " ";
-        }
-        std::cout << "\n";
 
-        // Solve for next solution
+        // Solve for next solution: U_i = P_i^{-1}(Q_i U_{i+1} + V_i)
         std::vector<double> intermediate_solution = Q_matrix * current_solution;
         for (size_t i = 0; i < V_vector.size(); ++i) {
             intermediate_solution[i] += V_vector[i];
         }
+        current_solution = P_matrix.solve(intermediate_solution);
 
-        next_solution = P_matrix.solve(intermediate_solution);
-
+        // Apply boundary conditions
         next_solution[0] = boundary_conditions_lower[t];
         next_solution[space_steps - 1] = boundary_conditions_upper[t];
 
         // Log intermediate solution
-        std::cout << "Intermediate solution: ";
-        for (double value : next_solution) {
-            std::cout << value << " ";
+        std::cout << "Time step t = " << t << ", intermediate solution:\n";
+        for (size_t i = 0; i < space_grid.size(); ++i) {
+            std::cout << "Space: " << space_grid[i] << " Value: "
+                      << (i > 0 && i < space_steps - 1 ? current_solution[i - 1] : next_solution[i]) << "\n";
         }
-        std::cout << "\n";
-
-        // Prevent negative values in the solution
-        for (auto &value : next_solution) {
-            if (value < 0.0) {
-                std::cerr << "Warning: Negative value detected and adjusted: " << value << "\n";
-            }
-            value = std::max(value, 0.0);
-        }
-
-        current_solution = next_solution;
     }
 
-    std::cout << "Final solution: ";
-    for (double value : current_solution) {
-        std::cout << value << " ";
+    // Final solution output
+    std::cout << "Final solution with space grid:\n";
+    for (size_t i = 0; i < space_grid.size(); ++i) {
+        std::cout << "Space: " << space_grid[i] << " Value: "
+                  << (i > 0 && i < space_steps - 1 ? current_solution[i - 1] : 0.0) << "\n";
     }
-    std::cout << "\n";
 
     return current_solution;
 }
